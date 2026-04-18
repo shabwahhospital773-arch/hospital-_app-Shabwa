@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام حجز مواعيد - هيئة مستشفى شبوة العام</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        /* CSS - هنا وضعنا التنسيق والشكل */
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --bg-color: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .header img {
+            width: 80px;
+            margin-bottom: 15px;
+        }
+
+        h1 { color: var(--primary-color); font-size: 1.5rem; margin-bottom: 5px; }
+        p.subtitle { color: #7f8c8d; margin-bottom: 25px; }
+
+        .input-group {
+            margin-bottom: 15px;
+            text-align: right;
+        }
+
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            box-sizing: border-box;
+            transition: 0.3s;
+        }
+
+        input:focus { border-color: var(--secondary-color); outline: none; }
+
+        button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            width: 100%;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover { background-color: #2980b9; }
+
+        #result {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 2px dashed #eee;
+        }
+
+        #qrcode {
+            display: flex;
+            justify-content: center;
+            margin: 15px 0;
+        }
+
+        .hidden { display: none; }
+        
+        .print-btn {
+            background-color: #2ecc71;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="header">
+            <h1>هيئة مستشفى شبوة العام</h1>
+            <p class="subtitle">بوابة الحجز الإلكتروني السريع</p>
+        </div>
+
+        <form id="bookingForm">
+            <div class="input-group">
+                <label>اسم المريض:</label>
+                <input type="text" id="patientName" placeholder="أدخل الاسم الكامل" required>
+            </div>
+            <div class="input-group">
+                <label>رقم التواصل:</label>
+                <input type="tel" id="patientPhone" placeholder="7xxxxxxxx" required>
+            </div>
+            <button type="submit">تأكيد الحجز وتوليد الرمز</button>
+        </form>
+
+        <div id="result" class="hidden">
+            <h3 style="color: #27ae60;">تم الحجز بنجاح!</h3>
+            <div id="qrcode"></div>
+            <p id="ticketInfo"></p>
+            <button class="print-btn" onclick="window.print()">طباعة التذكرة</button>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript - هنا وضعنا المنطق البرمجي
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('patientName').value;
+            const phone = document.getElementById('patientPhone').value;
+            const qrDiv = document.getElementById('qrcode');
+            
+            // تنظيف أي رمز QR سابق
+            qrDiv.innerHTML = "";
+
+            // البيانات التي سيحتويها الرمز (الاسم، الرقم، وتوقيت الحجز)
+            const timestamp = new Date().toLocaleString('ar-YE');
+            const data = `مستشفى شبوة\nالاسم: ${name}\nالهاتف: ${phone}\nالتاريخ: ${timestamp}`;
+
+            // توليد الرمز
+            new QRCode(qrDiv, {
+                text: data,
+                width: 160,
+                height: 160,
+                colorDark : "#2c3e50",
+                colorLight : "#ffffff"
+            });
+
+            // إظهار النتائج للمستخدم
+            document.getElementById('result').classList.remove('hidden');
+            document.getElementById('ticketInfo').innerText = `تذكرة المريض: ${name}`;
+            
+            // رسالة تأكيد
+            alert("تم توليد تذكرة الحجز الخاصة بك.");
+        });
+    </script>
+
+</body>
+</html>
