@@ -159,3 +159,77 @@
 
 </body>
 </html>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f6;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+}
+
+.logo { width: 100px; margin-bottom: 1rem; }
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+}
+
+.hidden { display: none; }
+
+#qrcode {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+document.getElementById('bookingForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const name = document.getElementById('userName').value;
+    const phone = document.getElementById('userPhone').value;
+    const qrDiv = document.getElementById('qrcode');
+    
+    // مسح أي QR قديم
+    qrDiv.innerHTML = "";
+
+    // منطق توليد الرمز
+    const qrData = `المريض: ${name} | الهاتف: ${phone} | التاريخ: ${new Date().toLocaleDateString()}`;
+    
+    new QRCode(qrDiv, {
+        text: qrData,
+        width: 150,
+        height: 150
+    });
+
+    // إظهار النتيجة
+    document.getElementById('qrContainer').classList.remove('hidden');
+    document.getElementById('ticketDetails').innerText = `الاسم: ${name}\nحالتك قيد المعالجة.`;
+    
+    alert("تم تسجيل البيانات بنجاح!");
+});
